@@ -10,34 +10,42 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "../../../config/firebase";
 //import { doc, Firestore, getDoc, getFirestore } from "firebase/firestore";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { async } from "@firebase/util";
+import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
+
 
 const HomeScreen = ({ auth, navigation }) => {
   // console.log(auth.currentUser.uid)
   const [userss, setUserss] = useState(null);
 
-  const getUsers = async () => {
-    let myarr = [];
-    const querySnapshot = await getDocs(collection(db, "users"));
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      // setUserss(doc.data().email)
-      // console.log(userss)
-      //console.log( doc.data().email);
-      const currUid = auth.currentUser.uid;
+  const getUsers = () => {
+    
+    const q =  query(collection(db, "users"));
+    const getRealTimeInfo = onSnapshot(q, (querySnapshot) => {
+      const userData = [];
+      querySnapshot.forEach((doc) => {
 
-      if (doc.data().uid != currUid) {
-        myarr.push(doc.data());
-        setUserss(myarr);
-      }
+        const currUid = auth.currentUser.uid;
+
+        if (doc.data().uid != currUid) {
+          userData.push(doc.data());
+          setUserss(userData);
+        }
+
+      });
     });
+
+    return ()=>{
+      getRealTimeInfo()
+    }
     //console.log(userss)
   };
 
   useEffect(() => {
     getUsers();
   }, []);
+
+
+ 
 
   const RenderCard = ({ item }) => {
     return (

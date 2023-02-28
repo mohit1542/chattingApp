@@ -1,21 +1,23 @@
 import React, { Component, useState , useEffect} from 'react'
-import { StyleSheet,Text, View, Image} from 'react-native'
+import { StyleSheet,Text, View, Image, KeyboardAvoidingView} from 'react-native'
 import { Bubble, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat'
-import { getDocs, collection, setDoc, doc, serverTimestamp, onSnapshot, query} from "firebase/firestore";
+import { getDocs, collection, setDoc, doc, serverTimestamp, onSnapshot, query, orderBy} from "firebase/firestore";
 import { db } from '../../../config/firebase';
 import colors from '../../constants/colors';
 import { Ionicons } from '@expo/vector-icons'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Chatscreen=({auth, route})=> {
 
+  const[livestatus, setLivestatus] =useState('');
   const [messages, setMessages] = useState([]);
   const {uid} =route.params;
 
   const getallMessages=()=>{
     const docid = uid > auth.currentUser.uid ? auth.currentUser.uid + "-" + uid : uid + "-" + auth.currentUser.uid
-     const messageRef = query(collection(db, 'chatrooms', docid, 'messages'));
+     const messageRef = query(collection(db, 'chatrooms', docid, 'messages'), orderBy('createdAt', 'desc'));
 
-    const realTimeChat= onSnapshot(messageRef, (querySnapshot) => {
+     const getRealTimeData =onSnapshot(messageRef, (querySnapshot) => {
             const msg= querySnapshot.docs.map((docu) => {
               //console.log(doc.id, " => ", doc.data());
               const data = docu.data()
@@ -33,17 +35,16 @@ const Chatscreen=({auth, route})=> {
                 }
 
             });
-        
-            const sortedmsg = msg.sort(function(a,b){
-              return  b.createdAt- a.createdAt;
-            })
-        
-            setMessages(sortedmsg)
+            setMessages(msg)
             
-  });
-    return ()=>{
-      realTimeChat()
-    }
+      }, (error)=>{
+          console.log(error)
+      });
+
+      return()=>{
+        getRealTimeData()
+      }
+   
     
   }
 
@@ -51,9 +52,6 @@ const Chatscreen=({auth, route})=> {
     getallMessages()    
 }, [])
 
-
-
- 
 
   const onSend = async(messageArray) => {
       const msg = messageArray[0]
@@ -78,9 +76,8 @@ const Chatscreen=({auth, route})=> {
   }
 
 
-
   return (
-    <View style={{flex:1, backgroundColor:'white'}}>
+<View style={{flex:1, backgroundColor:'white'}}>
     <GiftedChat
       messages={messages}
       onSend={messages => onSend(messages)}
@@ -107,6 +104,7 @@ const Chatscreen=({auth, route})=> {
       renderInputToolbar={(props)=>{
         return <InputToolbar {...props} containerStyle={{borderTopWidth:1.5, borderTopColor:'black'}} />
       }}
+
       renderSend={(props) =>{
         return (
             <Send
@@ -120,7 +118,11 @@ const Chatscreen=({auth, route})=> {
     }
   }
     />
+
     </View>
+
+
+   
   )
 }
 
@@ -135,7 +137,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-
-
-// 06zUS75hQNUvxhUDSyTDcEmpT9K2-q4z6M0LbIBg7sz61zeFWFM2Fghv2

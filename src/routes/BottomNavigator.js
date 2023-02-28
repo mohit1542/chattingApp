@@ -6,16 +6,17 @@ import Chatscreen from '../views/nav/ChatScreen'
 import { MaterialIcons } from '@expo/vector-icons'; 
 import {getAuth, onAuthState, onAuthStateChanged, signOut} from 'firebase/auth'
 import { useNavigation } from '@react-navigation/native';
-import { doc, updateDoc, collection, serverTimestamp, onSnapshot } from "firebase/firestore";
+import { doc, updateDoc, collection, serverTimestamp,onSnapshot } from "firebase/firestore";
 import { db } from '../../config/firebase'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Stack= createStackNavigator()
 
 
 const BottomNavigator=()=> {
-    const[userid, setUserid]=useState('')
-
-    
+    const[userid, setUserid]=useState('');
+    const[liveData, setLiveData]=useState('')
+ 
     useEffect(()=>{
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
@@ -67,12 +68,18 @@ const BottomNavigator=()=> {
                 name="ChatScreen" 
                 //component={Chatscreen} 
                 //options={{headerShown: false}}
-                options={({route})=>({title:<View>
-                                                <Text>{route.params.name}</Text>
-                                                <Text>{route.params.status}</Text>
-                                            </View> 
-                        })}
-            >
+                options={({route})=>(
+                                        onSnapshot(doc(db, "users", route.params.uid), (doc) => {
+                                        setLiveData(doc.data().status)
+                                        }),
+                                        {title:<View>
+                                                    <Text>{route.params.name}</Text>
+                                                    <Text style={{color:'red'}}>{liveData}</Text>
+                                                </View> 
+                                        }
+                                    )
+                        }
+                    >
                 {props => <Chatscreen {...props} auth={auth}/>}
             </Stack.Screen>
       </Stack.Navigator>
