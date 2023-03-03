@@ -1,5 +1,5 @@
 import React, { Component, useState , useEffect} from 'react'
-import { StyleSheet,Text, View, Image, KeyboardAvoidingView} from 'react-native'
+import { StyleSheet,Text, View, Image} from 'react-native'
 import { Bubble, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat'
 import { getDocs, collection, setDoc, doc, serverTimestamp, onSnapshot, query, orderBy} from "firebase/firestore";
 import { db } from '../../../config/firebase';
@@ -102,8 +102,11 @@ const Chatscreen=({auth, route})=> {
       }}
 
       renderInputToolbar={(props)=>{
-        return <InputToolbar {...props} containerStyle={{borderTopWidth:1.5, borderTopColor:'black'}} />
+        return (
+                    <InputToolbar {...props} containerStyle={{borderTopWidth:1, borderTopColor:'black', }} />
+              )
       }}
+
 
       renderSend={(props) =>{
         return (
