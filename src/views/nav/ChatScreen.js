@@ -5,7 +5,7 @@ import { getDocs, collection, setDoc, doc, serverTimestamp, onSnapshot, query, o
 import { db } from '../../../config/firebase';
 import colors from '../../constants/colors';
 import { Ionicons } from '@expo/vector-icons'; 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Chatscreen=({auth, route})=> {
 
