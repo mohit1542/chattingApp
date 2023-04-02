@@ -1,5 +1,5 @@
 node_modules/
-config/
+/config
 .expo/
 dist/
 npm-debug.*
@@ -10,7 +10,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
-.env/
+/.env
 
 
 # macOS
