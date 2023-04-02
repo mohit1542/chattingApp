@@ -9,7 +9,8 @@ import {
      TouchableOpacity,
      Platform,
      TextInput,
-     StatusBar
+     StatusBar,
+     Alert
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import Feather from 'react-native-vector-icons/Feather'
@@ -59,6 +60,17 @@ const LoginScreen =({navigation})=>{
 //login user
     const loginUser=()=>{
 
+        // Check if any field is empty
+    if (!data.email.trim() || !data.password.trim()) {
+        // Display an alert if any field is empty
+        Alert.alert(
+          'Error',
+          'Please enter both username and password to log in.',
+        );
+        return false;
+      }
+
+
         const auth = getAuth();
         signInWithEmailAndPassword(auth, data.email, data.password)
         .then((userCredential) => {
@@ -71,9 +83,13 @@ const LoginScreen =({navigation})=>{
         // ...
         })
         .catch((error) => {
+            
         console.log("somthing wrong (not logged in", error)
+        Alert.alert('Error', 'Invalid username or password.');
         });
     }
+
+    
 
     return (
       <View style={styles.container}>
@@ -103,11 +119,11 @@ const LoginScreen =({navigation})=>{
                 <Animatable.View
                     animation="bounceIn"
                 >
-                    <Feather
+                    {/* <Feather
                         name="check-circle"
                         color="green"
                         size={20}
-                    />
+                    /> */}
                 </Animatable.View>
                 :null}
             </View>
@@ -209,7 +225,7 @@ const styles =StyleSheet.create({
         paddingBottom:5,
     },
     textInput:{
-        flexlex:1,
+        flex:1,
         color:'#05375a',
         marginTop:-5,
         paddingLeft:10,

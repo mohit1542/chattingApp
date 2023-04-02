@@ -6,9 +6,9 @@ import AuthNavigator from "./src/routes/AuthNavigator";
 import { NavigationContainer } from '@react-navigation/native';
 import MainNavigator from './src/routes/MainNavigator';
 import {getAuth, onAuthState, onAuthStateChanged} from 'firebase/auth'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { doc, updateDoc, collection } from "firebase/firestore";
 import { db } from './config/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = ()=> {
 

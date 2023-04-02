@@ -5,7 +5,8 @@ import {
     StyleSheet,
     TouchableOpacity,
     TextInput,
-    StatusBar
+    StatusBar,
+    Alert
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import Feather from 'react-native-vector-icons/Feather'
@@ -15,26 +16,38 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { db } from '../../../config/firebase';
 import { addDoc, collection, doc, setDoc} from "firebase/firestore"; 
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { async } from '@firebase/util';
 
 const RegistrationScreen =()=>{
 
     const [data, setData] = React.useState({
+        name:'',
         email:'',
         password:'',
         confirm_password:'',
+        check_NameInput:false,
         check_textInputChange:false,
         secureTextEntry:true,
         confirm_secureTextEntry:true
     })
 
-  
-
-    
     const navigation=useNavigation();
 
 
+    const textName = (val) => {
+        if(val.length !=0){
+        setData({
+            ...data,
+            name: val,
+            check_NameInput:true
+        })
+    } else {
+        setData({
+            ...data,
+            name: val,
+            check_NameInput: false
+        })
+    }
+    }
 
     const textInputChange = (val) => {
         if(val.length != 0){
@@ -82,6 +95,17 @@ const RegistrationScreen =()=>{
 
 
         const registerUser=async()=>{
+
+            // Check if any field is empty
+            if (!data.email.trim() || !data.password.trim()) {
+                // Display an alert if any field is empty
+                Alert.alert(
+                'Error',
+                'Please fill out all fields.',
+                );
+                return false;
+            }
+
             const auth = getAuth();
            
         
@@ -95,7 +119,8 @@ const RegistrationScreen =()=>{
                      await setDoc(doc(db, "users", user.uid), {
                         email : user.email,
                         uid : user.uid,
-                        status : "online"
+                        status : "online",
+                        name: data.name
                       });
                       //console.log("registered");
                       console.log("Document written with ID: ", user.uid);
@@ -121,7 +146,27 @@ const RegistrationScreen =()=>{
         animation={'fadeInUpBig'}
         style={styles.footer}
         >
-            <Text style={styles.text_footer}>Email</Text>
+            <Text style={styles.text_footer}>Name</Text>
+            <View style={styles.action}>
+                <TextInput
+                    placeholder='Your Name'
+                    style={[styles.textInput, {paddingLeft:0}]}
+                    onChangeText={(val)=> textName(val)}
+                />
+                {data.check_NameInput ?
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                    />
+                </Animatable.View>
+                :null}
+            </View>
+
+            <Text style={[styles.text_footer,{marginTop:25}]}>Email</Text>
             <View style={styles.action}>
                 <FontAwesome
                     name='user-o'
@@ -147,7 +192,7 @@ const RegistrationScreen =()=>{
                 :null}
             </View>
 
-            <Text style={[styles.text_footer, {marginTop:30}]}>Password</Text>
+            <Text style={[styles.text_footer, {marginTop:25}]}>Password</Text>
             <View style={styles.action}>
                 <FontAwesome
                     name='lock'
@@ -180,7 +225,7 @@ const RegistrationScreen =()=>{
                 </TouchableOpacity>
             </View>
 
-            <Text style={[styles.text_footer, {marginTop:30}]}>Confirm Password</Text>
+            <Text style={[styles.text_footer, {marginTop:25}]}>Confirm Password</Text>
             <View style={styles.action}>
                 <FontAwesome
                     name='lock'
