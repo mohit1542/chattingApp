@@ -25,11 +25,6 @@ const BottomNavigator = () => {
     const openMenu = () => setVisible(true);
 
     const closeMenu = () => setVisible(false)
-        
-
-    const onPress = () => {
-        navigation.setParams({ closeMenu });
-      };
 
     const navigation = useNavigation();
 
@@ -74,8 +69,7 @@ const BottomNavigator = () => {
                                 visible={visible}
                                 onDismiss={closeMenu}
                                 overlayAccessibilityLabel='Close menu'
-                                anchor={<Entypo name="dots-three-vertical" size={24} color="black" onPress={()=>{openMenu() 
-                                                                                                            onPress()}} />}>
+                                anchor={<Entypo name="dots-three-vertical" size={24} color="black" onPress={openMenu} />}>
                                 <Menu.Item onPress={() => { navigation.navigate('Profile')}} title="Profile" />
                                 <Menu.Item onPress={() => { }} title="Settings" />
                                 <Divider />
