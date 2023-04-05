@@ -3,7 +3,7 @@ chatting app
 ---------------
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/109741733/229901879-b9355962-145a-4100-bf92-b236aabd6d6a.jpg" width="200"/>
+  <img src="https://user-images.githubusercontent.com/109741733/230135821-dc9e2a4d-1ab9-4289-8cf8-bf4e60346e7f.jpg" width="200"/>
   <img src="https://user-images.githubusercontent.com/109741733/229901879-b9355962-145a-4100-bf92-b236aabd6d6a.jpg" width="200" />
 </p>
 
